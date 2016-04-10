@@ -1,0 +1,23 @@
+# Site settings
+title: "機器學習小工藝"
+email: 
+description: "自己刻的ML"
+baseurl: "/ML-handicraft"
+url: "http://howchihlee.github.io"
+title_description: "嘴炮和機器學習的集散地"
+title_image: "http://www.gravatar.com/avatar/00000000000000000000000000000000?s=500&d=mm"
+github_repository: https://github.com/howchihlee/ML-handicraft
+post_limit: 20
+
+
+# Build settings
+markdown: kramdown
+mathjax: true
+
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  math_engine: mathjax
+  
+permalink: pretty
+exclude: [vendor]

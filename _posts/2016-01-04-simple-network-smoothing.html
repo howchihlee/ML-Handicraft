@@ -1,0 +1,386 @@
+---
+layout: post
+---
+
+  <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="&#26379;&#21451;&#21839;&#38988;">&#26379;&#21451;&#21839;&#38988;<a class="anchor-link" href="#&#26379;&#21451;&#21839;&#38988;">&#182;</a></h2>
+<pre><code>我的朋友是清流嗎?
+
+</code></pre>
+<p>阿峰看著彭九，心想，這個人會不會和他的朋友偉樁一樣下流？</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>阿峰最近關心起人在社會中互動，他跑去某個大學收集了一個小型人際網絡的資料。資料長像這樣。</p>
+<p>潔綺 - 偉豚 - 彭九
+        　　/  |
+       Ｏ文 - HC</p>
+<p>在上面的圖中呈現了一小群人(潔綺、偉豚、彭九、Ｏ文、HC)的人際關係。兩個人之間有連線的話，表示兩個人彼此是朋友。例如，從圖中我們可以讀出，潔綺和偉豚是朋友，偉樁和彭九（不是芙丸）也是朋友。</p>
+<p>除了這些朋友關係之外，阿峰還密切地觀察了偉豚和HC的作人做事。他下了兩個判斷：</p>
+<ol>
+<li>偉豚是下流</li>
+<li>HC是清流</li>
+</ol>
+<p>因為時間有限，阿峰沒有時間觀察其他人的行徑。問題來了:</p>
+<ol>
+<li>潔綺是清流還下流?</li>
+<li>彭九是清流還下流?</li>
+<li>Ｏ文是清流還下流?</li>
+</ol>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="&#24819;&#19968;&#24819;">&#24819;&#19968;&#24819;<a class="anchor-link" href="#&#24819;&#19968;&#24819;">&#182;</a></h2>
+<pre><code>根據上面給的資訊，我們可以建立一個Logistic classifier來預測彭九是清流還下流嗎？為什麼可以？為什麼不行？</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>事實上，要直接建立一個分類器來判斷彭九是清流還下流是有困難的，原因在於分類器通常依靠著資料點的"性質"來判斷對應的類別。例如說，透過觀察HC的"行為"(HC的"性質")，阿峰可以判斷HC是"清流"(HC的"類別")。但是，在上面的問題中，我們並沒有觀察到其他資料點(潔綺、彭九和Ｏ文)的"行為"。所以分類器無法直接被利用來判斷這些人的"類別"</p>
+<p>相對地，阿峰觀察到的是資料點之間的"關係"，例如，偉豚和彭九（不是芙丸）是朋友。有沒有辦法能利用資料點間的"關係"來判斷資料的"類別"呢?</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>阿峰想起了老祖宗的訓示: 近朱者赤，近墨者黑。他發現根據這個假設，可以做出一些預測:</p>
+<ol>
+<li>潔綺只跟下流偉豚做朋友，他大概是下流</li>
+<li>歐文和清流HC做朋友而和下流偉豚不是朋友，他也許是清流(!?)</li>
+<li>彭九（不是芙丸）有點難以判別，因為他同時和清流下流做朋友。
+讓我們把預測整理如下</li>
+</ol>
+<table>
+<thead><tr>
+<th></th>
+<th>潔綺</th>
+<th>偉豚</th>
+<th>彭九</th>
+<th>Ｏ文</th>
+<th>HC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>確認類別</td>
+<td></td>
+<td>下流!</td>
+<td></td>
+<td></td>
+<td>清流! </td>
+</tr>
+<tr>
+<td>直覺預測類別</td>
+<td>下流!</td>
+<td></td>
+<td>??</td>
+<td>清流!?</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>當然，嚴謹的阿峰不會因此滿足的。他想要把這個直覺，抽象成數學，轉化為ML演算法！
+首先，既然我們只有兩個類別，阿峰假設有個清流指標x, 舉例來說,當一個人的清流程度是x = 1，表示這個人是絕對清流(例如HC!), x= -1，表示這個人是絕對下流。x=0.3,表示這個人是清流，但是只有30%的清流。</p>
+<p>於是阿峰暫時設定所有人的清流指標如下:</p>
+<table>
+<thead><tr>
+<th></th>
+<th>潔綺</th>
+<th>偉豚</th>
+<th>彭九</th>
+<th>Ｏ文</th>
+<th>HC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>清流指標</td>
+<td>$x_1$</td>
+<td>-1</td>
+<td>$x_2$</td>
+<td>$x_3$</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>有了這些設定，阿峰進一步將老祖宗的訓示,近朱者赤,近墨者黑,翻譯成數學。這個直覺意謂著，</p>
+<blockquote><blockquote><p>如果兩個人是朋友,那他們的清流指標應該要相近。</p>
+</blockquote>
+</blockquote>
+<p>因此阿峰設計了這麼一個目標函數來預測大家的清流指標:
+$$f(x_1, x_2, x_3) =  (x_1 - (-1))^2 + (x_2 - (-1))^2 + (x_2 - x_3)^2 + (x_2 - 1)^2 + (x_3 - 1)^2 $$</p>
+<p>在這個目標函數中總結了5個觀察到的人際關係所給出的預測。每一個平方項都對應了一個人際關係，例如說，潔綺和偉豚是朋友，因此我們認為潔綺的清流程度($x_1$)和偉豚的清流程度($-1$)類似。而誤差項$(x_1 - (-1))^2$越小代表了兩人的清流程度($x_1$ 和 $-1$)越相近。</p>
+<p>因此，老祖宗的訓示可以被翻譯為</p>
+<blockquote><blockquote><p>當目標函數值最小時對應了我們要預測的清流程度</p>
+</blockquote>
+</blockquote>
+<p>當然，阿峰依舊超嚴謹的計算了目標函數的梯度</p>
+$$\nabla f(x_1, x_2, x_3) = (2x_1+2,\; 6x_2 - 2x_3,\; 4x_3 - 2x_2 - 2)$$<p>下列python code實做了這個目標函數:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">class</span> <span class="nc">simple_network_smoothing_fun</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> 
+    
+    <span class="k">def</span> <span class="nf">fval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
+        <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x3</span> <span class="o">=</span> <span class="n">weights</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">x2</span> <span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> 
+        <span class="n">f</span> <span class="o">+=</span> <span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="n">x3</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">x3</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">f</span>
+    
+    <span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
+        <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x3</span> <span class="o">=</span> <span class="n">weights</span>
+        <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x1</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span> <span class="o">*</span> <span class="n">x2</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x3</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">x3</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x2</span> <span class="o">-</span> <span class="mi">2</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>當然，想要最小化這個函數毫無疑問的我們先請出GD方法。</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">gradient_descent</span><span class="p">(</span><span class="n">obj_fun</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">step_size</span><span class="p">,</span> <span class="n">iters</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iters</span><span class="p">):</span> 
+        <span class="n">w</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">step_size</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">zip</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">obj_fun</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">w</span><span class="p">)))</span> <span class="c"># x + step_size * grad f(x)</span>
+    <span class="k">return</span> <span class="n">w</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">obj_fun</span> <span class="o">=</span> <span class="n">simple_network_smoothing_fun</span><span class="p">()</span>
+<span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">x_pred</span> <span class="o">=</span> <span class="n">gradient_descent</span><span class="p">(</span><span class="n">obj_fun</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s">&#39;潔綺&#39;</span><span class="p">,</span> <span class="s">&#39;彭九&#39;</span><span class="p">,</span> <span class="s">&#39;O文&#39;</span><span class="p">]):</span>
+    <span class="k">print</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">的清流指數 = </span><span class="si">%f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">x_pred</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>潔綺的清流指數 = -1.000000
+彭九的清流指數 = 0.200000
+O文的清流指數 = 0.600000
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>來看看這些數值預測的數值是不是符合之前直覺的預測</p>
+<table>
+<thead><tr>
+<th></th>
+<th>潔綺</th>
+<th>偉豚</th>
+<th>彭九</th>
+<th>Ｏ文</th>
+<th>HC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>確認類別</td>
+<td></td>
+<td>下流!</td>
+<td></td>
+<td></td>
+<td>清流! </td>
+</tr>
+<tr>
+<td>直覺預測類別</td>
+<td>下流!</td>
+<td></td>
+<td>??</td>
+<td>清流!?</td>
+<td></td>
+</tr>
+<tr>
+<td>ML預測清流指數</td>
+<td>-1</td>
+<td></td>
+<td>0.2</td>
+<td>0.6</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>這些數值恰當的反應了我們根據老祖宗訓示所作的預測！更進一步的，這個ML演算法指出了</p>
+<blockquote><blockquote><p>彭九(不是芙丸) 是20%的清流</p>
+</blockquote>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="&#22914;&#20309;&#34389;&#29702;&#26356;&#22823;&#30340;&#20154;&#38555;&#32178;&#32097;?">&#22914;&#20309;&#34389;&#29702;&#26356;&#22823;&#30340;&#20154;&#38555;&#32178;&#32097;?<a class="anchor-link" href="#&#22914;&#20309;&#34389;&#29702;&#26356;&#22823;&#30340;&#20154;&#38555;&#32178;&#32097;?">&#182;</a></h2><p>讓我們更進一步來分析阿峰設計的目標函數。
+$$f(x_1, x_2, x_3) =  (x_1 - (-1))^2 + (x_2 - (-1))^2 + (x_2 - x_3)^2 + (x_2 - 1)^2 + (x_3 - 1)^2 $$</p>
+<p>潔綺 - 偉豚 - 彭九
+        　　/  |
+       Ｏ文 - HC</p>
+<table>
+<thead><tr>
+<th></th>
+<th>潔綺</th>
+<th>偉豚</th>
+<th>彭九</th>
+<th>Ｏ文</th>
+<th>HC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> 潔綺</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0 </td>
+</tr>
+<tr>
+<td>偉豚</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>彭九</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1 </td>
+</tr>
+<tr>
+<td>Ｏ文</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1 </td>
+</tr>
+<tr>
+<td>HC</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1 </td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre> 
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+    </div>
+  </div>

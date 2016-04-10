@@ -1,0 +1,7 @@
+{% for post in site.posts reversed limit: site.post_limit %}
+	<li>
+	<small class="hidden-xs">{{ post.date | date: "%d" }}</small>
+	<a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+		
+	</li>
+{% endfor %}
