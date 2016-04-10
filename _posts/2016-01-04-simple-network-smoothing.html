@@ -1,7 +1,7 @@
 ---
 layout: post
+title: network smoothing made easy
 ---
-
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
 
@@ -15,19 +15,8 @@ layout: post
 
 </code></pre>
 <p>阿峰看著彭九，心想，這個人會不會和他的朋友偉樁一樣下流？</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>阿峰最近關心起人在社會中互動，他跑去某個大學收集了一個小型人際網絡的資料。資料長像這樣。</p>
-<p>潔綺 - 偉豚 - 彭九
-        　　/  |
-       Ｏ文 - HC</p>
+<p>阿峰最近關心起人在社會中互動，他跑去某個大學收集了一個小型人際網絡的資料。資料長像這樣。
+<img src="{{ site.url }}/{{site.baseurl}}/images/small_network.png" alt="alt text"></p>
 <p>在上面的圖中呈現了一小群人(潔綺、偉豚、彭九、Ｏ文、HC)的人際關係。兩個人之間有連線的話，表示兩個人彼此是朋友。例如，從圖中我們可以讀出，潔綺和偉豚是朋友，偉樁和彭九（不是芙丸）也是朋友。</p>
 <p>除了這些朋友關係之外，阿峰還密切地觀察了偉豚和HC的作人做事。他下了兩個判斷：</p>
 <ol>
@@ -50,16 +39,9 @@ layout: post
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="&#24819;&#19968;&#24819;">&#24819;&#19968;&#24819;<a class="anchor-link" href="#&#24819;&#19968;&#24819;">&#182;</a></h2>
-<pre><code>根據上面給的資訊，我們可以建立一個Logistic classifier來預測彭九是清流還下流嗎？為什麼可以？為什麼不行？</code></pre>
+<pre><code>根據上面給的資訊，我們可以建立一個Logistic classifier來預測彭九是清流還下流嗎？為什麼可以？為什麼不行？
 
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
+</code></pre>
 <p>事實上，要直接建立一個分類器來判斷彭九是清流還下流是有困難的，原因在於分類器通常依靠著資料點的"性質"來判斷對應的類別。例如說，透過觀察HC的"行為"(HC的"性質")，阿峰可以判斷HC是"清流"(HC的"類別")。但是，在上面的問題中，我們並沒有觀察到其他資料點(潔綺、彭九和Ｏ文)的"行為"。所以分類器無法直接被利用來判斷這些人的"類別"</p>
 <p>相對地，阿峰觀察到的是資料點之間的"關係"，例如，偉豚和彭九（不是芙丸）是朋友。有沒有辦法能利用資料點間的"關係"來判斷資料的"類別"呢?</p>
 
@@ -107,15 +89,6 @@ layout: post
 </tr>
 </tbody>
 </table>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <p>當然，嚴謹的阿峰不會因此滿足的。他想要把這個直覺，抽象成數學，轉化為ML演算法！
 首先，既然我們只有兩個類別，阿峰假設有個清流指標x, 舉例來說,當一個人的清流程度是x = 1，表示這個人是絕對清流(例如HC!), x= -1，表示這個人是絕對下流。x=0.3,表示這個人是清流，但是只有30%的清流。</p>
 <p>於是阿峰暫時設定所有人的清流指標如下:</p>
@@ -308,10 +281,13 @@ O文的清流指數 = 0.600000
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="&#22914;&#20309;&#34389;&#29702;&#26356;&#22823;&#30340;&#20154;&#38555;&#32178;&#32097;?">&#22914;&#20309;&#34389;&#29702;&#26356;&#22823;&#30340;&#20154;&#38555;&#32178;&#32097;?<a class="anchor-link" href="#&#22914;&#20309;&#34389;&#29702;&#26356;&#22823;&#30340;&#20154;&#38555;&#32178;&#32097;?">&#182;</a></h2><p>讓我們更進一步來分析阿峰設計的目標函數。
-$$f(x_1, x_2, x_3) =  (x_1 - (-1))^2 + (x_2 - (-1))^2 + (x_2 - x_3)^2 + (x_2 - 1)^2 + (x_3 - 1)^2 $$</p>
-<p>潔綺 - 偉豚 - 彭九
-        　　/  |
-       Ｏ文 - HC</p>
+$$f(x_1, x_2, x_3) =  (x_1 - (-1))^2 + (x_2 - (-1))^2 + (x_2 - x_3)^2 + (x_2 - 1)^2 + (x_3 - 1)^2 $$
+如果我們先假裝偉豚與HC的清流指數是$y_1$和$y_2$，上面的函數可以改寫成
+$$g(x_1, y_1, x_2, x_3, y_2) = (x_1 - y_1)^2 + (x_2 - y_1)^2 + (x_2 - x_3)^2 + (x_2 - y_2)^2 + (x_3 - y_2)^2 $$
+如此一來，函數$g(x_1, y_1, x_2, x_3, y_2)$ 就可以簡單敘述成，把是朋友的兩個人的清流指數相減取平方在加起來。經過一些繁瑣的計算，我們還可以得到
+$g(x_1, y_1, x_2, x_3, y_2) = 2 xLx^T$,
+其中$x = (x_1, y_1, x_2, x_3, y_2)$，而L是<a href="https://en.wikipedia.org/wiki/Laplacian_matrix#Graphs">Graph Laplacian</a>。</p>
+<p>下表列出了某大學人際網路的Graph Laplacian。</p>
 <table>
 <thead><tr>
 <th></th>
@@ -326,61 +302,54 @@ $$f(x_1, x_2, x_3) =  (x_1 - (-1))^2 + (x_2 - (-1))^2 + (x_2 - x_3)^2 + (x_2 - 1
 <tr>
 <td> 潔綺</td>
 <td>1</td>
-<td>1</td>
+<td>-1</td>
 <td>0</td>
 <td>0</td>
 <td>0 </td>
 </tr>
 <tr>
 <td>偉豚</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
+<td>-1</td>
+<td>2</td>
+<td>-1</td>
 <td>0</td>
 <td>0</td>
 </tr>
 <tr>
 <td>彭九</td>
 <td>0</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1 </td>
+<td>-1</td>
+<td>3</td>
+<td>-1</td>
+<td>-1 </td>
 </tr>
 <tr>
 <td>Ｏ文</td>
 <td>0</td>
 <td>0</td>
-<td>1</td>
-<td>1</td>
-<td>1 </td>
+<td>-1</td>
+<td>2</td>
+<td>-1 </td>
 </tr>
 <tr>
 <td>HC</td>
 <td>0</td>
 <td>0</td>
-<td>1</td>
-<td>1</td>
-<td>1 </td>
+<td>-1</td>
+<td>-1</td>
+<td>2 </td>
 </tr>
 </tbody>
 </table>
+<p>所以，上面討論的最佳化問題，可以重新改寫成</p>
+<blockquote><blockquote><p>minimize $g(x_1, y_1, x_2, x_3, y_2) = 2 xLx^T$</p>
+<p>subject to $y_1 = -1,\; y_2 = 1$</p>
+</blockquote>
+</blockquote>
+<p>如此一來，面對更大型的network資料我們也可以透過計算Graph Laplacian，而輕鬆寫出他的目標函數。</p>
 
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre> 
-</pre></div>
-
-</div>
-</div>
-</div>
-
 </div>
     </div>
   </div>
